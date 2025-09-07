@@ -496,6 +496,7 @@
                     <a href="dib.html"><i class="fas fa-money-bill-wave"></i> DIB</a>
                     <a href="inv.html"><i class="fas fa-chart-line"></i> Invest</a>
                     <a href="track.html" class="active"><i class="fas fa-chart-pie"></i> Track</a>
+                     <a href="#" id="logoutBtn">Logout</a>
                 </div>
                 
                 <button class="theme-toggle" id="themeToggle">
@@ -781,7 +782,12 @@
             alert('Please log in to access this page.');
             window.location.href = 'login.html';
         }
-
+document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'login.html';
+        });
+        
         // Theme Toggle Functionality
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = themeToggle.querySelector('i');
