@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Savings-M</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --text: #2b2d42;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --menu-bg: rgba(255, 255, 255, 0.95);
+            --footer-bg: #2b2d42;
+            --footer-text: #f8f9fa;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        .dark-theme {
+            --primary: #4cc9f0;
+            --secondary: #4895ef;
+            --accent: #f72585;
+            --success: #4361ee;
+            --text: #edf2f4;
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --menu-bg: rgba(30, 30, 30, 0.98);
+            --footer-bg: #0b0b0b;
+            --footer-text: #edf2f4;
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: var(--transition);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: var(--menu-bg);
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--primary);
+            z-index: 101;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-left: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 60px 0;
+            flex: 1;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+        .page-header p {
+            color: var(--text);
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 20px auto 0;
+            font-size: 1.2rem;
+        }
+
+        /* About Sections */
+        .about-section {
+            margin-bottom: 60px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-header h2 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .section-header p {
+            color: var(--text);
+            opacity: 0.8;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Mission Section */
+        .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .mission-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow);
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .mission-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .mission-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .mission-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .team-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .team-img {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .team-img i {
+            font-size: 5rem;
+            color: white;
+        }
+
+        .team-info {
+            padding: 25px;
+        }
+
+        .team-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+
+        .team-info .role {
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 80px 0;
+            border-radius: 15px;
+            margin: 60px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-item .number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-item .label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Values Section */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .value-item {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .value-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .value-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 40px 0 20px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: var(--footer-text);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--footer-text);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .mission-grid, .team-grid, .stats-grid, .values-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .value-item {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <i class="fas fa-piggy-bank"></i>
+                    <span>Savings</span>-M
+                </a>
+                
+                <div class="nav-links">
+                    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                    <a href="dib.html"><i class="fas fa-money-bill-wave"></i> DIB</a>
+                    <a href="inv.html"><i class="fas fa-chart-line"></i> Invest</a>
+                    <a href="track.html"><i class="fas fa-chart-pie"></i> Track</a>
+                    <a href="about.html" class="active"><i class="fas fa-info-circle"></i> About</a>
+                </div>
+                
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            <div class="page-header fade-in">
+                <h1>About Savings-M</h1>
+                <p>Empowering individuals to take control of their financial future through innovative tools and education</p>
+            </div>
+
+            <!-- Our Story Section -->
+            <div class="about-section fade-in delay-1">
+                <div class="section-header">
+                    <h2>Our Story</h2>
+                    <p>How we started our journey to revolutionize personal finance management</p>
+                </div>
+                
+                <div class="mission-card">
+                    <p>Savings-M was founded in 2020 with a simple mission: to make financial management accessible to everyone. Our founders recognized that many people struggle with tracking their expenses, investments, and savings, often relying on complicated spreadsheets or multiple disconnected apps.</p>
+                    <br>
+                    <p>We set out to create an integrated platform that would simplify financial tracking while providing powerful insights into spending habits, investment performance, and savings goals. Today, Savings-M helps thousands of users achieve financial clarity and work toward their money goals with confidence.</p>
+                </div>
+            </div>
+
+            <!-- Mission Section -->
+            <div class="about-section fade-in delay-2">
+                <div class="section-header">
+                    <h2>Our Mission & Vision</h2>
+                    <p>What drives us to innovate in the personal finance space</p>
+                </div>
+                
+                <div class="mission-grid">
+                    <div class="mission-card">
+                        <div class="mission-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h3>Our Mission</h3>
+                        <p>To democratize financial management by providing intuitive tools that help people understand, track, and optimize their financial health regardless of their economic background or financial knowledge.</p>
+                    </div>
+                    
+                    <div class="mission-card">
+                        <div class="mission-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3>Our Vision</h3>
+                        <p>To create a world where everyone has the knowledge and tools to achieve financial freedom, reduce money-related stress, and build wealth for themselves and future generations.</p>
+                    </div>
+                    
+                    <div class="mission-card">
+                        <div class="mission-icon">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                        <h3>Our Promise</h3>
+                        <p>To always put our users first, maintaining the highest standards of security, transparency, and usability while continuously innovating to meet evolving financial needs.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="stats-section fade-in">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="number">10,000+</div>
+                        <div class="label">Active Users</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="number">$15M+</div>
+                        <div class="label">Assets Tracked</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="number">98%</div>
+                        <div class="label">User Satisfaction</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="number">24/7</div>
+                        <div class="label">Support Available</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Section -->
+            <div class="about-section">
+                <div class="section-header">
+                    <h2>Our Team</h2>
+                    <p>The passionate individuals behind Savings-M</p>
+                </div>
+                
+                <div class="team-grid">
+                    <div class="team-card fade-in">
+                        <div class="team-img">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="team-info">
+                            <h3>Michael Zhang</h3>
+                            <div class="role">Founder & CEO</div>
+                            <p>Former financial analyst with 10+ years of experience in fintech and personal wealth management.</p>
+                            <div class="social-links">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-card fade-in delay-1">
+                        <div class="team-img">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="team-info">
+                            <h3>Sarah Johnson</h3>
+                            <div class="role">Chief Product Officer</div>
+                            <p>Product design expert focused on creating intuitive user experiences for financial applications.</p>
+                            <div class="social-links">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-card fade-in delay-2">
+                        <div class="team-img">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="team-info">
+                            <h3>David Chen</h3>
+                            <div class="role">Lead Developer</div>
+                            <p>Full-stack developer specializing in secure financial applications and data visualization.</p>
+                            <div class="social-links">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-card fade-in delay-3">
+                        <div class="team-img">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="team-info">
+                            <h3>Emily Rodriguez</h3>
+                            <div class="role">Financial Advisor</div>
+                            <p>Certified financial planner who ensures our tools align with best practices in money management.</p>
+                            <div class="social-links">
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Values Section -->
+            <div class="about-section">
+                <div class="section-header">
+                    <h2>Our Values</h2>
+                    <p>The principles that guide everything we do</p>
+                </div>
+                
+                <div class="values-grid">
+                    <div class="value-item fade-in">
+                        <div class="value-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="value-content">
+                            <h3>Security First</h3>
+                            <p>We implement bank-level security measures to protect our users' financial data, ensuring complete privacy and peace of mind.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="value-item fade-in delay-1">
+                        <div class="value-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div class="value-content">
+                            <h3>Innovation</h3>
+                            <p>We continuously explore new technologies and approaches to make financial management more effective and accessible.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="value-item fade-in delay-2">
+                        <div class="value-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="value-content">
+                            <h3>User-Centric</h3>
+                            <p>Our users' needs drive our development process. We listen, adapt, and evolve based on real user feedback.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="value-item fade-in delay-3">
+                        <div class="value-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="value-content">
+                            <h3>Education</h3>
+                            <p>We believe knowledge is power. Beyond tools, we provide resources to improve financial literacy.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Savings-M</h3>
+                    <p>Empowering you to make better financial decisions and achieve your money goals.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Menu</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="dib.html">DIB</a></li>
+                        <li><a href="inv.html">Invest</a></li>
+                        <li><a href="track.html">Track</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Newsletter</h3>
+                    <p>Subscribe to our newsletter for financial tips and updates.</p>
+                    <form>
+                        <input type="email" placeholder="Your email address" style="padding: 10px; width: 100%; margin-bottom: 10px; border-radius: 5px; border: none;">
+                        <button type="submit" class="btn" style="padding: 10px;">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Savings-M. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // Check for saved theme preference or use OS preference
+        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            
+            if (document.body.classList.contains('dark-theme')) {
+                localStorage.setItem('theme', 'dark');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+
+        // Add animation on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.fade-in');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.visibility = 'visible';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animatedElements.forEach(element => {
+                element.style.visibility = 'hidden';
+                observer.observe(element);
+            });
+        });
+    </script>
+</body>
+</html>
