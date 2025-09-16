@@ -654,7 +654,8 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Date/Time</th>
+                                    <th>Date</th>
+                                    <th>Desc</th>
                                     <th>Remaining</th>
                                     <th>Actions</th>
                                 </tr>
@@ -1058,7 +1059,8 @@ document.getElementById('logoutBtn').addEventListener('click', function(e) {
                     trackingData.forEach(item => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${item.date} ${item.time}</td>
+                            <td>${item.date}</td>
+                            <td>${item.notes}</td>
                             <td>${(item.remaining || 0).toFixed(2)}</td>
                             <td class="action-buttons">
                                 <button class="edit-btn" data-id="${item.id}">
