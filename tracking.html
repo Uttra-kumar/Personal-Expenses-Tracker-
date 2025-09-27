@@ -704,7 +704,6 @@
         const submitBtn = document.getElementById('submitBtn');
         const updateBtn = document.getElementById('updateBtn');
         const cancelBtn = document.getElementById('cancelBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
         
         // State variables
         let editingId = null;
@@ -754,11 +753,6 @@
             });
             
             // Logout button
-            logoutBtn.addEventListener('click', function() {
-                if (confirm('Are you sure you want to logout?')) {
-                    window.location.href = 'index.html';
-                }
-            });
             
             // Filter buttons
             document.querySelectorAll('[data-filter]').forEach(button => {
