@@ -704,18 +704,12 @@
         const submitBtn = document.getElementById('submitBtn');
         const updateBtn = document.getElementById('updateBtn');
         const cancelBtn = document.getElementById('cancelBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
         
         // State variables
         let editingId = null;
         let records = [];
         
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            loadAttendanceRecords();
-            setupEventListeners();
-            setDefaultDateAndDay();
-        });
+        // Initialize the pa
         
         // Set default date and day
         function setDefaultDateAndDay() {
@@ -811,13 +805,7 @@
         
         // Load dummy data for demonstration
         function loadDummyData() {
-            records = [
-                { id: 1, date: '2025-09-27', day: 'Saturday', amount: 100.00, paid: 'Yes', category: 'Salary' },
-                { id: 2, date: '2025-09-26', day: 'Friday', amount: 50.00, paid: 'No', category: 'Bonus' },
-                { id: 3, date: '2025-09-25', day: 'Thursday', amount: 75.00, paid: 'Yes', category: 'Allowance' },
-                { id: 4, date: '2025-09-24', day: 'Wednesday', amount: 120.00, paid: 'Yes', category: 'Salary' },
-                { id: 5, date: '2025-09-23', day: 'Tuesday', amount: 60.00, paid: 'No', category: 'Bonus' }
-            ];
+            records = [];
             renderTable(records);
             updateStats(records);
             updateCategoryFilter(records);
