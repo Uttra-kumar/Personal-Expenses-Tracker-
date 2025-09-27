@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4361ee">
+    <title>Expense-T | Daily Expense Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a237e;
+            --secondary: #283593;
+            --accent: #3949ab;
+            --light: #e8eaf6;
+            --dark: #121858;
+            --card-bg: #ffffff;
+            --header-bg: #1a237e;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --info: #2196f3;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--header-bg), var(--secondary));
+            color: var(--text-light);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            color: #ffd54f;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .datetime {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+            font-size: 1.2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 1.5rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+        }
+        
+        .page-title {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 2rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 auto;
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .stat-1 .stat-icon {
+            background: var(--primary);
+        }
+        
+        .stat-2 .stat-icon {
+            background: var(--success);
+        }
+        
+        .stat-3 .stat-icon {
+            background: var(--warning);
+        }
+        
+        .stat-4 .stat-icon {
+            background: var(--info);
+        }
+        
+        .stat-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .stat-info p {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .quick-actions {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
+        }
+        
+        .quick-actions h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .action-card {
+            background: var(--light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .action-card:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .action-card:hover i {
+            color: white;
+        }
+        
+        .action-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .action-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        p {
+            line-height: 1rem;
+            color: #34495e;
+            margin-bottom: 1rem;
+        }
+        
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 1.5rem 0;
+            margin-top: 25px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        
+        footer p {
+            color: #ecf0f1;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        footer span {
+            color: var(--warning);
+            font-weight: 600;
+        }
+        
+        /* Session counter specific styling */
+        #counter {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            animation: pulse 2s infinite;
+            margin-left: 0.25rem;
+        }
+        
+        p1 {
+            font-size: 1.2rem;
+            color: #ecf0f1 !important;
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            header {
+                padding: 1rem;
+            }
+            
+            .hero {
+                padding: 2rem 1rem;
+            }
+            
+            .feature-card,
+            .stat-card,
+            .quick-actions {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-top">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <h1>Expense-T | Financial Manager</h1>
+            </div>
+            <div class="datetime">
+                <span id="date-time"></span>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active"><i class="fas fa-home"></i> Home</a></li>
+                <li id="login"><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                <li><a href="attendence.html"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+                <li><a href="investment.html"><i class="fas fa-chart-pie"></i> Investment</a></li>
+                <li><a href="tracking.html"><i class="fas fa-search-dollar"></i> Tracking</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <div class="page-title">
+            <i class="fas fa-tachometer-alt"></i> Dashboard Overview
+        </div>
+        
+        <section class="hero">
+            <h2>Take Control of Your Financial Future</h2>
+            <p>Expense-T is your all-in-one solution for managing expenses, tracking investments, and monitoring attendance. Our intuitive platform helps you make smarter financial decisions and achieve your goals faster.</p>
+            <a href="login.html" class="btn">Get Started <i class="fas fa-arrow-right"></i></a>
+        </section>
+        
+        <section class="quick-actions">
+            <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+            <div class="action-grid">
+                <div class="action-card" onclick="window.location.href='attendence.html'">
+                    <i class="fas fa-calendar-plus"></i>
+                    <h3>Add Attendance</h3>
+                    <p>Record new attendance entries</p>
+                </div>
+                <div class="action-card" onclick="window.location.href='investment.html'">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Track Investment</h3>
+                    <p>Monitor your investment portfolio</p>
+                </div>
+                <div class="action-card" onclick="window.location.href='tracking.html'">
+                    <i class="fas fa-search-dollar"></i>
+                    <h3>Financial Tracking</h3>
+                    <p>Analyze your financial health</p>
+                </div>
+                <div class="action-card" onclick="window.location.href='login.html'">
+                    <i class="fas fa-user-cog"></i>
+                    <h3>Account Settings</h3>
+                    <p>Manage your profile and preferences</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="features">
+            <div class="feature-card">
+                <i class="fas fa-money-bill-wave"></i>
+                <h3>Expense Tracking</h3>
+                <p>Easily record and categorize your daily expenses. Set budgets and get intelligent alerts when you're approaching your limits.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Investment Monitoring</h3>
+                <p>Track your investments across multiple asset classes. Visualize performance with interactive charts and analytics.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>Attendance Management</h3>
+                <p>Maintain accurate records of work or personal attendance with our intuitive calendar and reporting system.</p>
+            </div>
+        </section>
+        
+        <section class="stats">
+            <div class="stat-card stat-1">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>10,000+</h3>
+                    <p>Active Users</p>
+                </div>
+            </div>
+            <div class="stat-card stat-2">
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>$2.5M+</h3>
+                    <p>Total Savings</p>
+                </div>
+            </div>
+            <div class="stat-card stat-3">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>95%</h3>
+                    <p>User Satisfaction</p>
+                </div>
+            </div>
+            <div class="stat-card stat-4">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>24/7</h3>
+                    <p>Support Available</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Tractor Fleet Management || Designed By <span>Uttra Patel</span><br />
+
+            </p>
+        </div>
+    </footer>
+    <script>
+        // Real-time date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('date-time').textContent = now.toLocaleDateString('en-US', options);
+        }
+        
+        // Check if user is logged in
+        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+        const authBtn = document.getElementById("login");
+        
+        // Update login/logout button based on login status
+        function updateAuthButton() {
+            if (isLoggedIn) {
+                authBtn.innerHTML = '<a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>';
+            } else {
+                authBtn.innerHTML = '<a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>';
+            }
+        }
+        
+        // Handle login/logout functionality
+        authBtn.addEventListener("click", (e) => {
+            if (isLoggedIn) {
+                e.preventDefault();
+                localStorage.setItem("isLoggedIn", "false");
+                // Redirect to login page after logout
+                window.location.href = "login.html";
+            }
+            // If not logged in, the link will naturally navigate to login.html
+        });
+        
+        // Session counter functionality
+        
+        // Initialize the page
+        updateDateTime();
+        updateAuthButton();
+        setInterval(updateDateTime, 1000);
+       
+    </script>
+</body>
+
+</html>
