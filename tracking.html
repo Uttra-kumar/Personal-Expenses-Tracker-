@@ -348,43 +348,58 @@
             transform: scale(1.05);
         }
 
+                p {
+            line-height: 1rem;
+            color: #34495e;
+            margin-bottom: 1rem;
+        }
+        
         footer {
             background: var(--dark);
             color: white;
-            text-align: center;
-            padding: 1.5rem;
-            margin-top: 2rem;
+            padding: 1.5rem 0;
+            margin-top: 25px;
         }
-
-        .footer-content {
+        
+        .container {
             max-width: 1200px;
             margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+            padding: 0 2rem;
+            text-align: center;
         }
-
-        .session-info {
-            margin-top: 0.5rem;
-            font-size: 0.8rem;
-            color: #ccc;
-        }
-
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 0.5rem;
-        }
-
-        .social-icons a {
-            color: white;
+        
+        footer p {
+            color: #ecf0f1;
             font-size: 1.2rem;
-            transition: color 0.3s ease;
+            margin-bottom: 0.5rem;
         }
-
-        .social-icons a:hover {
-            color: #ffd54f;
+        
+        footer span {
+            color: #ff9800;
+            font-weight: 600;
+        }
+        
+        /* Session counter specific styling */
+        #counter {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            animation: pulse 2s infinite;
+            margin-left: 0.25rem;
+        }
+        
+        p1 {
+            font-size: 1.2rem;
+            color: #ecf0f1 !important;
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
         }
 
         @media (max-width: 768px) {
@@ -628,19 +643,11 @@
     </div>
 
     <footer>
-        <div class="footer-content">
-            <p>&copy; 2025 Expense-T | Tracking Manager. Designed By Ultra Patel</p>
-            <div class="session-info">
-                session expired in <strong id="sessionTimer">52</strong> minutes
-            </div>
-            <div class="social-icons">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-linkedin"></i></a>
-            </div>
+        <div class="container">
+            <p>&copy; 2025 Tractor Fleet Management || Designed By <span>Uttra Patel</span><br />
+                <p1>session expired is <span id="counter">0s</span></p1>
+            </p>
         </div>
-    </footer>
 <script scr="session.js"></sxript>
     <script>
         // Initialize Supabase client
