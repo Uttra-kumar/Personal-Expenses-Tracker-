@@ -67,11 +67,3 @@ function noBack() {
   window.history.forward(); 
 }
 // sessionCheck.js (sab pages me include karo)
-document.addEventListener("DOMContentLoaded", function () {
-  const user = sessionStorage.getItem("isLoggedIn"); // ya localStorage.getItem("user")
-
-  if (!user) {
-    // agar login data nahi hai to login page pe bhej do
-    window.location.href = "login.html";
-  }
-});
