@@ -62,8 +62,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-window.history.forward();
-function noBack() { 
-  window.history.forward(); 
-}
-// sessionCheck.js (sab pages me include karo)
