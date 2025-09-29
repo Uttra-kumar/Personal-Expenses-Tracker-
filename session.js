@@ -1,3 +1,16 @@
+window.history.forward();
+    function noBack() {
+      window.history.forward();
+    }
+
+    // ✅ Page show event fix (cached reload)
+    window.onpageshow = function(event) {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    };
+
+
 document.addEventListener('DOMContentLoaded', function() {
   const isLoggedIn = localStorage.getItem('isLoggedIn');
 
