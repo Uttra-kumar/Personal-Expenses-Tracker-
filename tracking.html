@@ -627,6 +627,7 @@ uu<!DOCTYPE html>
             <table id="trackingTable">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>Date</th>
                         <th>Day</th>
                         <th>Track Amount</th>
@@ -1039,9 +1040,11 @@ uu<!DOCTYPE html>
                 return;
             }
             
-            recordsToRender.forEach(record => {
+            recordsToRender.forEach((record,index) => {
                 const row = document.createElement('tr');
+                const seq = index + 1;
                 row.innerHTML = `
+                    <td>${seq}</td>
                     <td>${formatDate(record.date)}</td>
                     <td>${record.day}</td>
                     <td>${record.track_amount.toFixed(2)}</td>
