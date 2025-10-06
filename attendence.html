@@ -377,11 +377,12 @@
             padding: 1rem;
             text-align: left;
             border-bottom: 1px solid #eee;
+            font-weight: bold;
         }
         
         th {
             background: var(--light);
-            font-weight: 600;
+            font-weight: bold;
             color: var(--primary);
         }
         
@@ -826,7 +827,7 @@
             <table id="attendanceTable" style="display: none;">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>#</th>
                         <th>Date</th>
                         <th>Day</th>
                         <th>Amount</th>
@@ -1589,10 +1590,11 @@
                 return;
             }
             
-            recordsToRender.forEach(record => {
+            recordsToRender.forEach((record,index) => {
                 const row = document.createElement('tr');
+                const seq = index + 1;
                 row.innerHTML = `
-                    <td>${record.id}</td>
+                    <td>${seq}</td>
                     <td>${formatDate(record.date)}</td>
                     <td>${record.day}</td>
                     <td>${record.amount.toFixed(2)}</td>
