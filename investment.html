@@ -726,7 +726,7 @@
             </p>
         </div>
     </footer>
-
+<script src="session.js"></script>
     <script>
         // Initialize Supabase client (Replace with your Supabase URL and Key)
         const supabaseUrl = 'https://iydamvrlxtwsnqvflaxq.supabase.co';
@@ -751,29 +751,6 @@
         // Update time immediately and then every second
         updateDateTime();
         setInterval(updateDateTime, 1000);
-
-        // Session timer countdown
-        let sessionTime = 52;
-        const sessionTimer = document.getElementById('sessionTimer');
-        
-        function updateSessionTimer() {
-            sessionTime--;
-            sessionTimer.textContent = sessionTime;
-            
-            if (sessionTime <= 0) {
-                alert('Session expired. Please log in again.');
-                window.location.href = 'login.html';
-            }
-        }
-        
-        // Update session timer every minute
-        setInterval(updateSessionTimer, 60000);
-
-        // Reset session timer on user activity
-        document.addEventListener('click', function() {
-            sessionTime = 52;
-            sessionTimer.textContent = sessionTime;
-        });
 
         // DOM elements
         const investmentForm = document.getElementById('investmentForm');
