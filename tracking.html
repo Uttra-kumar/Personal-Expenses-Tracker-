@@ -531,6 +531,16 @@
                     <div class="calculation-info">Remain Amount</div>
                 </div>
             </div>
+                        <div class="financial-card invest-amount">
+                <div class="card-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="card-info">
+                    <h3 id="savingAmount">0.00</h3>
+                    <p>Total Amount</p>
+                    <div class="calculation-info">Saving & Earning</div>
+                </div>
+                        </div>
         </div>
 
         <div class="tracking-form">
@@ -840,6 +850,8 @@
             const remainingElement = document.getElementById('remainingAmount');
             remainingElement.textContent = `${remainingAmount.toFixed(2)}`;
             remainingElement.className = remainingAmount >= 0 ? 'positive' : 'negative';
+            const savingElement = document.getElementById('savingAmount');
+            savingElement.textContent = `${saving}`
         }
 
         // Load dummy financial data for demonstration
@@ -885,13 +897,7 @@
 
         // Load dummy tracking data for demonstration
         function loadDummyTrackingData() {
-            trackRecords = [
-                { id: 1, date: '2025-09-27', day: 'Saturday', track_amount: 500.00, mode: 'Bank Transfer', notes: 'Monthly savings transfer' },
-                { id: 2, date: '2025-09-26', day: 'Friday', track_amount: 250.00, mode: 'Cash', notes: 'Emergency fund' },
-                { id: 3, date: '2025-09-25', day: 'Thursday', track_amount: 750.00, mode: 'Credit Card', notes: 'Investment repayment' },
-                { id: 4, date: '2025-09-24', day: 'Wednesday', track_amount: 300.00, mode: 'Digital Wallet', notes: 'Online payment' },
-                { id: 5, date: '2025-09-23', day: 'Tuesday', track_amount: 1000.00, mode: 'Bank Transfer', notes: 'Business expense tracking' }
-            ];
+            trackRecords = [];
             renderTable(trackRecords);
             updateFinancialOverview();
             updateModeFilter(trackRecords);
