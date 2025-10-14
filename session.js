@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
       clearInterval(intervalId);
       localStorage.removeItem("isLoggedIn");
       localStorage.removeItem("session");
-      alert("⏳ Session expired! Please login again.");
+      alert("⏳ Please login again.");
       window.location.href = "login.html";
       return;
     }
