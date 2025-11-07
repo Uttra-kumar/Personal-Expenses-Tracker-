@@ -2427,7 +2427,7 @@
                 const totalAmount = data.reduce((sum, record) => sum + (record.amount || 0), 0);
 
                 // Prepare table data
-                const columns = ["S.No", "Date", "Day", "Amount", "Paid", "Category", "Status"];
+                const columns = ["#", "Date", "Day", "Amount", "Paid", "Category", "Status"];
                 const rows = data.map((record, index) => [
                     index + 1,
                     record.date,
@@ -2574,7 +2574,7 @@ document.getElementById("exportYearlyPdf").addEventListener("click", async () =>
             doc.text(monthHeaderText, monthHeaderX, currentY + 7);
             currentY += 15;
             
-            const columns = ["S.No", "Date", "Day", "Amount", "Paid", "Category", "Status"];
+            const columns = ["#", "Date", "Day", "Amount", "Paid", "Category", "Status"];
             const rows = records.map((r, index) => [
                 index + 1,
                 r.date,
