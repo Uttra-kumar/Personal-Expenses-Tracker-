@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         EXPIRY_TIME: 'session'
     };
 
-    const REDIRECT_URL = "admin-login.html";
+    const REDIRECT_URL = "login.html";
 
     const isLoggedIn = localStorage.getItem(SESSION_KEYS.LOGIN_STATUS);
 
