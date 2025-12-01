@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Attendance System</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-blue: #2c3e50;
+            --secondary-blue: #3498db;
+            --accent-green: #2ecc71;
+            --accent-red: #e74c3c;
+            --accent-yellow: #f1c40f;
+            --accent-orange: #e67e22;
+            --light-bg: #ecf0f1;
+            --dark-bg: #34495e;
+            --text-light: #ffffff;
+            --text-dark: #2c3e50;
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-bg));
+            min-height: 100vh;
+            padding: 30px 20px;
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            font-size: 3.2rem;
+            background: linear-gradient(to right, var(--accent-green), var(--secondary-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .calendar-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: linear-gradient(to right, var(--primary-blue), var(--secondary-blue));
+            border-radius: 15px;
+            color: var(--text-light);
+        }
+
+        .month-display {
+            font-size: 2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .day-label {
+            text-align: center;
+            padding: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+            background: var(--light-bg);
+            border-radius: 10px;
+            font-size: 1.1rem;
+        }
+
+        .sunday {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .day-box {
+            aspect-ratio: 1;
+            background: var(--light-bg);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .day-box.selected {
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+        }
+
+        .day-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .day-status {
+            font-size: 0.9rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .present {
+            background: linear-gradient(135deg, var(--accent-green), #27ae60);
+            color: white;
+        }
+
+        .absent {
+            background: linear-gradient(135deg, var(--accent-red), #c0392b);
+            color: white;
+        }
+
+        .leave {
+            background: linear-gradient(135deg, var(--accent-yellow), #f39c12);
+            color: var(--text-dark);
+        }
+
+        .holiday {
+            background: linear-gradient(135deg, var(--accent-orange), #d35400);
+            color: white;
+        }
+
+        .status-controls {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 30px;
+            padding: 25px;
+            background: var(--light-bg);
+            border-radius: 15px;
+            flex-wrap: wrap;
+        }
+
+        .status-btn {
+            padding: 18px 35px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 180px;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .status-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .status-btn i {
+            font-size: 1.3rem;
+        }
+
+        .btn-present {
+            background: linear-gradient(135deg, var(--accent-green), #27ae60);
+            color: white;
+        }
+
+        .btn-absent {
+            background: linear-gradient(135deg, var(--accent-red), #c0392b);
+            color: white;
+        }
+
+        .btn-leave {
+            background: linear-gradient(135deg, var(--accent-yellow), #f39c12);
+            color: var(--text-dark);
+        }
+
+        .btn-remove {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+
+        .stats-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+
+        .stat-card:nth-child(1)::before { background: var(--secondary-blue); }
+        .stat-card:nth-child(2)::before { background: var(--accent-green); }
+        .stat-card:nth-child(3)::before { background: var(--accent-red); }
+        .stat-card:nth-child(4)::before { background: var(--accent-yellow); }
+
+        .stat-title {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 2.8rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-total { color: var(--secondary-blue); }
+        .stat-present { color: var(--accent-green); }
+        .stat-absent { color: var(--accent-red); }
+        .stat-leave { color: var(--accent-yellow); }
+
+        .salary-section {
+            background: var(--light-bg);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .salary-input-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .salary-input {
+            padding: 16px 25px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            width: 280px;
+            transition: all 0.3s ease;
+        }
+
+        .salary-input:focus {
+            outline: none;
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .save-btn {
+            padding: 16px 35px;
+            background: linear-gradient(135deg, var(--secondary-blue), #2980b9);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .records-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--primary-blue);
+        }
+
+        .export-btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--accent-green), #27ae60);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+        }
+
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .records-table th {
+            background: linear-gradient(to right, var(--primary-blue), var(--dark-bg));
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .records-table td {
+            padding: 18px 20px;
+            border-bottom: 1px solid #eee;
+            color: var(--text-dark);
+        }
+
+        .records-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .records-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .action-btn {
+            padding: 8px 18px;
+            background: var(--secondary-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .action-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 20px 30px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.5s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, var(--accent-green), #27ae60);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, var(--accent-red), #c0392b);
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        @media (max-width: 1024px) {
+            .calendar-grid {
+                gap: 10px;
+            }
+            
+            .status-controls {
+                gap: 15px;
+            }
+            
+            .status-btn {
+                min-width: 150px;
+                padding: 15px 25px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .calendar-grid {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 8px;
+            }
+            
+            .day-box {
+                padding: 10px;
+            }
+            
+            .status-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .status-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .salary-input-group {
+                flex-direction: column;
+            }
+            
+            .salary-input {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calendar-grid {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 5px;
+            }
+            
+            .day-box {
+                padding: 8px;
+            }
+            
+            .day-number {
+                font-size: 1.2rem;
+            }
+            
+            .nav-btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-calendar-alt"></i> Advanced Attendance System</h1>
+            <p>Track attendance, manage leaves, and generate reports with ease</p>
+        </div>
+
+        <!-- Calendar Section -->
+        <div class="calendar-section">
+            <div class="calendar-header">
+                <div class="month-display">
+                    <i class="far fa-calendar"></i>
+                    <span id="monthYear">January 2024</span>
+                </div>
+                <div class="nav-buttons">
+                    <button class="nav-btn" onclick="prevMonth()">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <button class="nav-btn" onclick="nextMonth()">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Will be populated by JavaScript -->
+            </div>
+
+            <!-- Status Controls -->
+            <div class="status-controls">
+                <button class="status-btn btn-present" onclick="setStatus('Present')">
+                    <i class="fas fa-check-circle"></i> Mark Present
+                </button>
+                <button class="status-btn btn-absent" onclick="setStatus('Absent')">
+                    <i class="fas fa-times-circle"></i> Mark Absent
+                </button>
+                <button class="status-btn btn-leave" onclick="setStatus('Leave')">
+                    <i class="fas fa-umbrella-beach"></i> Mark Leave
+                </button>
+                <button class="status-btn btn-remove" onclick="removeStatus()">
+                    <i class="fas fa-trash-alt"></i> Remove Status
+                </button>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="stats-section">
+            <h2><i class="fas fa-chart-bar"></i> Monthly Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-title">Total Days</div>
+                    <div class="stat-value stat-total" id="totalDays">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Present Days</div>
+                    <div class="stat-value stat-present" id="totalPresent">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Absent Days</div>
+                    <div class="stat-value stat-absent" id="totalAbsent">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Leave Days</div>
+                    <div class="stat-value stat-leave" id="totalLeave">0</div>
+                </div>
+            </div>
+
+            <!-- Salary Input -->
+            <div class="salary-section">
+                <h3><i class="fas fa-money-bill-wave"></i> Salary Management</h3>
+                <div class="salary-input-group">
+                    <input type="number" 
+                           id="salaryInput" 
+                           class="salary-input" 
+                           placeholder="Enter monthly salary (₹)" 
+                           min="0">
+                    <button class="save-btn" onclick="saveSalary()">
+                        <i class="fas fa-save"></i> Save Salary Data
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Records Section -->
+        <div class="records-section">
+            <div class="section-header">
+                <h2><i class="fas fa-database"></i> Monthly Records</h2>
+                <button class="export-btn" onclick="exportToPDF()">
+                    <i class="fas fa-file-pdf"></i> Export Current Month to PDF
+                </button>
+            </div>
+            <table class="records-table" id="recordsTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Month</th>
+                        <th>Present</th>
+                        <th>Absent</th>
+                        <th>Leave</th>
+                        <th>Total Days</th>
+                        <th>Salary (₹)</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="recordsBody">
+                    <!-- Will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Initialize Supabase (optional)
+        const SUPABASE_URL = 'https://your-project.supabase.co';
+        const SUPABASE_ANON_KEY = 'your-anon-key';
+        let supabase;
+        
+        try {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (error) {
+            console.warn('Supabase not configured, using local storage only');
+        }
+        
+        // Initialize jsPDF
+        const { jsPDF } = window.jspdf;
+        
+        // Global variables
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth();
+        let attendanceData = {}; // This stores ALL attendance data from ALL months
+        let selectedDate = null;
+        let monthlyRecords = [];
+        
+        // DOM Elements
+        const calendarGrid = document.getElementById('calendarGrid');
+        const monthYear = document.getElementById('monthYear');
+        const totalDaysEl = document.getElementById('totalDays');
+        const totalPresentEl = document.getElementById('totalPresent');
+        const totalAbsentEl = document.getElementById('totalAbsent');
+        const totalLeaveEl = document.getElementById('totalLeave');
+        const salaryInput = document.getElementById('salaryInput');
+        const recordsBody = document.getElementById('recordsBody');
+        const notification = document.getElementById('notification');
+        
+        // Day labels
+        const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadAllAttendanceData(); // Load ALL data from localStorage
+            generateCalendar();
+            await loadMonthlyRecords();
+        });
+        
+        // Load ALL attendance data from localStorage
+        async function loadAllAttendanceData() {
+            attendanceData = {};
+            
+            // Load all keys from localStorage that start with 'attendance_'
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('attendance_')) {
+                    try {
+                        const savedData = localStorage.getItem(key);
+                        if (savedData) {
+                            const monthData = JSON.parse(savedData);
+                            // Merge this month's data into the main attendanceData object
+                            Object.assign(attendanceData, monthData);
+                        }
+                    } catch (error) {
+                        console.error('Error loading data for key:', key, error);
+                    }
+                }
+            }
+            
+            console.log('Loaded attendance data:', attendanceData);
+        }
+        
+        // Generate calendar
+        function generateCalendar() {
+            calendarGrid.innerHTML = '';
+            
+            // Add day labels
+            dayLabels.forEach((label, index) => {
+                const dayLabel = document.createElement('div');
+                dayLabel.className = `day-label ${index === 0 ? 'sunday' : ''}`;
+                dayLabel.textContent = label;
+                calendarGrid.appendChild(dayLabel);
+            });
+            
+            // Get first day and days in month
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // Add empty cells for alignment
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                calendarGrid.appendChild(emptyCell);
+            }
+            
+            // Add day cells
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'day-box';
+                const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                dayCell.dataset.date = dateKey;
+                
+                // Day number
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = day;
+                dayCell.appendChild(dayNumber);
+                
+                // Day status indicator
+                const dayStatus = document.createElement('div');
+                dayStatus.className = 'day-status';
+                dayCell.appendChild(dayStatus);
+                
+                // Check if Sunday
+                const dateObj = new Date(currentYear, currentMonth, day);
+                if (dateObj.getDay() === 0) {
+                    dayCell.classList.add('holiday');
+                    dayStatus.textContent = 'Holiday';
+                }
+                
+                // Add click event
+                dayCell.addEventListener('click', () => selectDate(dayCell));
+                
+                calendarGrid.appendChild(dayCell);
+            }
+            
+            // Update month display
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            monthYear.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            // Update total days
+            totalDaysEl.textContent = daysInMonth;
+            
+            updateCalendarStatus();
+        }
+        
+        // Select date
+        function selectDate(dayElement) {
+            // Don't allow selecting Sundays
+            if (dayElement.classList.contains('holiday')) {
+                showNotification('Cannot mark attendance for Sundays (Holidays)', 'error');
+                return;
+            }
+            
+            // Clear previous selection
+            const selectedElements = document.querySelectorAll('.day-box.selected');
+            selectedElements.forEach(el => el.classList.remove('selected'));
+            
+            // Set new selection
+            selectedDate = dayElement.dataset.date;
+            dayElement.classList.add('selected');
+        }
+        
+        // Update calendar with attendance data
+        function updateCalendarStatus() {
+            const dayBoxes = document.querySelectorAll('.day-box:not(.holiday)');
+            
+            dayBoxes.forEach(box => {
+                const date = box.dataset.date;
+                const statusElement = box.querySelector('.day-status');
+                
+                // Reset classes
+                box.classList.remove('present', 'absent', 'leave');
+                statusElement.textContent = '';
+                
+                // Apply attendance status from the global attendanceData
+                if (attendanceData[date]) {
+                    box.classList.add(attendanceData[date].toLowerCase());
+                    statusElement.textContent = attendanceData[date];
+                }
+            });
+            
+            calculateStatistics();
+        }
+        
+        // Set attendance status
+        async function setStatus(status) {
+            if (!selectedDate) {
+                showNotification('Please select a date first', 'error');
+                return;
+            }
+            
+            // Update global attendanceData
+            attendanceData[selectedDate] = status;
+            
+            // Get month key for localStorage
+            const dateObj = new Date(selectedDate);
+            const monthKey = `attendance_${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+            
+            // Save to localStorage
+            try {
+                // Get existing month data
+                let monthData = {};
+                const savedData = localStorage.getItem(monthKey);
+                if (savedData) {
+                    monthData = JSON.parse(savedData);
+                }
+                
+                // Update with new status
+                monthData[selectedDate] = status;
+                
+                // Save back to localStorage
+                localStorage.setItem(monthKey, JSON.stringify(monthData));
+                
+                console.log('Saved to localStorage:', monthKey, monthData);
+                
+            } catch (error) {
+                console.error('Error saving to localStorage:', error);
+                showNotification('Error saving attendance', 'error');
+                return;
+            }
+            
+            updateCalendarStatus();
+            showNotification(`Marked as ${status} successfully`, 'success');
+            
+            // Clear selection
+            const selectedElement = document.querySelector('.day-box.selected');
+            if (selectedElement) {
+                selectedElement.classList.remove('selected');
+            }
+            selectedDate = null;
+        }
+        
+        // Remove status
+        async function removeStatus() {
+            if (!selectedDate) {
+                showNotification('Please select a date first', 'error');
+                return;
+            }
+            
+            if (attendanceData[selectedDate]) {
+                const dateObj = new Date(selectedDate);
+                const monthKey = `attendance_${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+                
+                try {
+                    // Get existing month data
+                    let monthData = {};
+                    const savedData = localStorage.getItem(monthKey);
+                    if (savedData) {
+                        monthData = JSON.parse(savedData);
+                    }
+                    
+                    // Remove the status
+                    delete monthData[selectedDate];
+                    delete attendanceData[selectedDate];
+                    
+                    // Save back to localStorage
+                    localStorage.setItem(monthKey, JSON.stringify(monthData));
+                    
+                    console.log('Removed from localStorage:', selectedDate);
+                    
+                } catch (error) {
+                    console.error('Error removing from localStorage:', error);
+                    showNotification('Error removing attendance', 'error');
+                    return;
+                }
+                
+                updateCalendarStatus();
+                showNotification('Attendance status removed', 'success');
+                
+                // Clear selection
+                const selectedElement = document.querySelector('.day-box.selected');
+                if (selectedElement) {
+                    selectedElement.classList.remove('selected');
+                }
+                selectedDate = null;
+            } else {
+                showNotification('No attendance record found for this date', 'error');
+            }
+        }
+        
+        // Calculate statistics
+        function calculateStatistics() {
+            let present = 0, absent = 0, leave = 0;
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dateObj = new Date(date);
+                
+                // Skip Sundays (holidays)
+                if (dateObj.getDay() === 0) continue;
+                
+                if (attendanceData[date] === 'Present') present++;
+                else if (attendanceData[date] === 'Absent') absent++;
+                else if (attendanceData[date] === 'Leave') leave++;
+            }
+            
+            totalPresentEl.textContent = present;
+            totalAbsentEl.textContent = absent;
+            totalLeaveEl.textContent = leave;
+        }
+        
+        // Save salary data
+        async function saveSalary() {
+            const salary = salaryInput.value;
+            if (!salary || salary <= 0) {
+                showNotification('Please enter a valid salary amount', 'error');
+                return;
+            }
+            
+            const monthYearKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+            const present = parseInt(totalPresentEl.textContent);
+            const absent = parseInt(totalAbsentEl.textContent);
+            const leave = parseInt(totalLeaveEl.textContent);
+            const total = parseInt(totalDaysEl.textContent);
+            
+            try {
+                // Save to localStorage
+                const salaryData = {
+                    month_year: monthYearKey,
+                    salary: salary,
+                    present_days: present,
+                    absent_days: absent,
+                    leave_days: leave,
+                    total_days: total,
+                    updated_at: new Date().toISOString()
+                };
+                
+                localStorage.setItem(`salary_${monthYearKey}`, JSON.stringify(salaryData));
+                
+                showNotification('Salary data saved successfully', 'success');
+                salaryInput.value = '';
+                loadMonthlyRecords();
+            } catch (error) {
+                console.error('Error saving salary:', error);
+                showNotification('Error saving salary data', 'error');
+            }
+        }
+        
+        // Load monthly records
+        async function loadMonthlyRecords() {
+            monthlyRecords = [];
+            
+            // Load from localStorage
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('salary_')) {
+                    try {
+                        const savedData = localStorage.getItem(key);
+                        if (savedData) {
+                            const record = JSON.parse(savedData);
+                            monthlyRecords.push(record);
+                        }
+                    } catch (error) {
+                        console.error('Error loading salary data:', error);
+                    }
+                }
+            }
+            
+            // Sort by month_year (newest first)
+            monthlyRecords.sort((a, b) => {
+                return b.month_year.localeCompare(a.month_year);
+            });
+            
+            renderRecordsTable();
+        }
+        
+        // Render records table
+        function renderRecordsTable() {
+            recordsBody.innerHTML = '';
+            
+            monthlyRecords.forEach((record, index) => {
+                const row = document.createElement('tr');
+                
+                const [year, month] = record.month_year.split('-');
+                const monthName = new Date(year, month - 1).toLocaleString('default', { month: 'long' });
+                
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${monthName} ${year}</td>
+                    <td>${record.present_days || 0}</td>
+                    <td>${record.absent_days || 0}</td>
+                    <td>${record.leave_days || 0}</td>
+                    <td>${record.total_days || 0}</td>
+                    <td>₹${record.salary || 0}</td>
+                    <td>
+                        <button class="action-btn" onclick="exportMonthPDF('${record.month_year}')">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
+                    </td>
+                `;
+                
+                recordsBody.appendChild(row);
+            });
+        }
+        
+        // Export current month to PDF
+        function exportToPDF() {
+            exportMonthPDF(`${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`);
+        }
+        
+        // Export specific month to PDF - FIXED: Now shows correct Present/Absent/Leave status
+        async function exportMonthPDF(monthYear) {
+            const [year, month] = monthYear.split('-');
+            const monthName = new Date(year, month - 1).toLocaleString('default', { month: 'long' });
+            const daysInMonth = new Date(year, month, 0).getDate();
+            
+            // Create PDF in landscape mode
+            const doc = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+            
+            // Set margins
+            const margin = 10;
+            const pageWidth = doc.internal.pageSize.width;
+            
+            // Header
+            doc.setFontSize(20);
+            doc.setTextColor(44, 62, 80);
+            doc.text(`Attendance Report - ${monthName} ${year}`, pageWidth / 2, 20, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Generated by Attendance System', pageWidth / 2, 28, { align: 'center' });
+            
+            // Summary section
+            const record = monthlyRecords.find(r => r.month_year === monthYear);
+            
+            // Get attendance data for this specific month from localStorage
+            const monthKey = `attendance_${year}-${month}`;
+            let monthAttendanceData = {};
+            
+            try {
+                const savedData = localStorage.getItem(monthKey);
+                if (savedData) {
+                    monthAttendanceData = JSON.parse(savedData);
+                }
+            } catch (error) {
+                console.error('Error loading attendance data for PDF:', error);
+            }
+            
+            console.log('Attendance data for PDF:', monthKey, monthAttendanceData);
+            
+            // Summary table data
+            const summaryData = [
+                ['Total Days', record?.total_days || daysInMonth],
+                ['Present Days', record?.present_days || 0],
+                ['Absent Days', record?.absent_days || 0],
+                ['Leave Days', record?.leave_days || 0],
+                ['Monthly Salary', `₹${record?.salary || 0}`]
+            ];
+            
+            // Create summary table
+            doc.autoTable({
+                startY: 35,
+                head: [['Metric', 'Value']],
+                body: summaryData,
+                theme: 'grid',
+                headStyles: { 
+                    fillColor: [52, 152, 219],
+                    fontSize: 11,
+                    textColor: [255, 255, 255]
+                },
+                bodyStyles: { fontSize: 11 },
+                columnStyles: {
+                    0: { cellWidth: 60, fontStyle: 'bold' },
+                    1: { cellWidth: 40 }
+                },
+                margin: { left: margin, right: margin },
+                tableWidth: 100
+            });
+            
+            // Daily attendance table - FIXED: Uses the correct attendance data
+            const startY = doc.lastAutoTable.finalY + 15;
+            
+            doc.setFontSize(16);
+            doc.setTextColor(52, 152, 219);
+            doc.text('Daily Attendance Details', margin, startY);
+            
+            // Prepare table data
+            const tableData = [];
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = `${year}-${month}-${String(day).padStart(2, '0')}`;
+                const dateObj = new Date(date);
+                const dayName = dayLabels[dateObj.getDay()];
+                
+                // Get status from the month's attendance data
+                let status = monthAttendanceData[date] || 'Not Marked';
+                if (dateObj.getDay() === 0) status = 'Holiday';
+                
+                // Color coding for status
+                let statusColor;
+                switch(status) {
+                    case 'Present': statusColor = [46, 204, 113]; break; // Green
+                    case 'Absent': statusColor = [231, 76, 60]; break; // Red
+                    case 'Leave': statusColor = [241, 196, 15]; break; // Yellow
+                    case 'Holiday': statusColor = [230, 126, 34]; break; // Orange
+                    default: statusColor = [149, 165, 166]; // Gray
+                }
+                
+                tableData.push({
+                    day: day,
+                    weekday: dayName,
+                    date: date,
+                    status: status,
+                    statusColor: statusColor
+                });
+            }
+            
+            // Convert to array for autoTable
+            const tableRows = tableData.map(item => [
+                item.day,
+                item.weekday,
+                item.date,
+                item.status
+            ]);
+            
+            // Create table with proper column widths
+            doc.autoTable({
+                startY: startY + 10,
+                head: [['Day', 'Weekday', 'Date', 'Status']],
+                body: tableRows,
+                theme: 'striped',
+                headStyles: { 
+                    fillColor: [44, 62, 80],
+                    fontSize: 10,
+                    textColor: [255, 255, 255]
+                },
+                bodyStyles: { fontSize: 9 },
+                columnStyles: {
+                    0: { cellWidth: 25, halign: 'center' },
+                    1: { cellWidth: 30, halign: 'center' },
+                    2: { cellWidth: 50, halign: 'center' },
+                    3: { cellWidth: 35, halign: 'center', fontStyle: 'bold' }
+                },
+                margin: { left: margin, right: margin },
+                tableWidth: 140,
+                styles: { 
+                    overflow: 'linebreak',
+                    cellPadding: 3
+                },
+                didParseCell: function(data) {
+                    // Color code status cells
+                    if (data.column.index === 3 && data.row.index < tableRows.length) {
+                        const item = tableData[data.row.index];
+                        data.cell.styles.textColor = item.statusColor;
+                        data.cell.styles.fontStyle = 'bold';
+                    }
+                }
+            });
+            
+            // Footer
+            const finalY = doc.lastAutoTable.finalY + 10;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(150, 150, 150);
+            doc.text(
+                `Report Generated: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`,
+                pageWidth / 2,
+                Math.min(finalY, doc.internal.pageSize.height - 10),
+                { align: 'center' }
+            );
+            
+            // Save PDF
+            doc.save(`Attendance_Report_${monthName}_${year}.pdf`);
+            showNotification('PDF exported successfully with correct attendance data!', 'success');
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Navigation functions
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar();
+        }
+        
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar();
+        }
+    </script>
+</body>
+</html>
