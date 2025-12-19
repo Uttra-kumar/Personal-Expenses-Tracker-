@@ -786,7 +786,7 @@
         // Initialize Supabase client
         const supabaseUrl = 'https://iydamvrlxtwsnqvflaxq.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZGFtdnJseHR3c25xdmZsYXhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwOTczMTIsImV4cCI6MjA3MzY3MzMxMn0.Z8m6XGyu9wsN_UJ8EZYr12BRemsO12_U8EEZ9JizQ6w';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const client = window.supabase.createClient(supabaseUrl, supabaseKey);
         
         // Real-time date and time
         function updateDateTime() {
@@ -926,7 +926,7 @@
         async function loadAllFinancialData() {
             try {
                 // Load D-Attend data (only Open records)
-                const { data: attendData, error: attendError } = await supabase
+                const { data: attendData, error: attendError } = await client
                     .from('D-Atten')
                     .select('amount, status')
                     .eq('status', 'Open');
@@ -936,7 +936,7 @@
                 }
                 
                 // Load D-Invest data (only Open records)
-                const { data: investData, error: investError } = await supabase
+                const { data: investData, error: investError } = await client
                     .from('D-Invest')
                     .select('amount, status')
                     .eq('status', 'Open');
@@ -989,7 +989,7 @@
         // Load tracking records from D-Track table
         async function loadTrackingRecords() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await client
                     .from('D-Track')
                     .select('*')
                     .order('date', { ascending: false });
@@ -1014,7 +1014,7 @@
             const formData = getFormData();
             
             try {
-                const { data, error } = await supabase
+                const { data, error } = await client
                     .from('D-Track')
                     .insert([formData])
                     .select();
@@ -1038,7 +1038,7 @@
             const formData = getFormData();
             
             try {
-                const { error } = await supabase
+                const { error } = await client
                     .from('D-Track')
                     .update(formData)
                     .eq('id', id);
@@ -1062,7 +1062,7 @@
             if (!confirm('Are you sure you want to delete this tracking record?')) return;
             
             try {
-                const { error } = await supabase
+                const { error } = await client
                     .from('D-Track')
                     .delete()
                     .eq('id', id);
