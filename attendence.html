@@ -1169,7 +1169,7 @@
         // Initialize Supabase client
         const supabaseUrl = 'https://iydamvrlxtwsnqvflaxq.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5ZGFtdnJseHR3c25xdmZsYXhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwOTczMTIsImV4cCI6MjA3MzY3MzMxMn0.Z8m6XGyu9wsN_UJ8EZYr12BRemsO12_U8EEZ9JizQ6w';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const client = window.supabase.createClient(supabaseUrl, supabaseKey);
         
         // Real-time date and time
         function updateDateTime() {
@@ -1469,7 +1469,7 @@
         // Load day-wise attendance records from Supabase
         async function loadAttendanceRecords() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await client
                     .from('D-Atten')
                     .select('*')
                     .order('date', { ascending: false });
@@ -1499,7 +1499,7 @@
         // Load monthly attendance records from Supabase
         async function loadMonthlyRecords() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await client
                     .from('D-Atten-Monthly')
                     .select('*')
                     .order('month_year', { ascending: false });
@@ -1756,7 +1756,7 @@
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
                 submitBtn.disabled = true;
                 
-                const { data, error } = await supabase
+                const { data, error } = await client
                     .from('D-Atten')
                     .insert([formData])
                     .select();
@@ -1792,7 +1792,7 @@
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
                 submitBtn.disabled = true;
                 
-                const { data, error } = await supabase
+                const { data, error } = await client
                     .from('D-Atten-Monthly')
                     .insert([formData])
                     .select();
@@ -1828,7 +1828,7 @@
                 updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
                 updateBtn.disabled = true;
                 
-                const { error } = await supabase
+                const { error } = await client
                     .from('D-Atten')
                     .update(formData)
                     .eq('id', id);
@@ -1864,7 +1864,7 @@
                 updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
                 updateBtn.disabled = true;
                 
-                const { error } = await supabase
+                const { error } = await client
                     .from('D-Atten-Monthly')
                     .update(formData)
                     .eq('id', id);
@@ -1897,7 +1897,7 @@
             }
             
             try {
-                const { error } = await supabase
+                const { error } = await client
                     .from('D-Atten')
                     .delete()
                     .eq('id', id);
@@ -1923,7 +1923,7 @@
             }
             
             try {
-                const { error } = await supabase
+                const { error } = await client
                     .from('D-Atten-Monthly')
                     .delete()
                     .eq('id', id);
@@ -2401,7 +2401,7 @@
                  const lastDay = new Date(year, month, 0).getDate(); // ✅ correct last date
                   const endDate = `${selectedMonth}-${String(lastDay).padStart(2, "0")}`;
 
-                const { data, error } = await supabase
+                const { data, error } = await client
                     .from("D-Atten")
                     .select("*")
                     .gte("date", startDate)
@@ -2507,7 +2507,7 @@ document.getElementById("exportYearlyPdf").addEventListener("click", async () =>
         const startDate = `${selectedYear}-01-01`;
         const endDate = `${selectedYear}-12-31`;
         
-        const { data, error } = await supabase
+        const { data, error } = await client
             .from("D-Atten")
             .select("*")
             .gte("date", startDate)
