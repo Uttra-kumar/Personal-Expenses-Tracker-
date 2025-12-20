@@ -823,157 +823,182 @@
         
         // Select date
         function selectDate(dayElement) {
-            // Don't allow selecting Sundays
-            
-            
-            // Clear previous selection
-            const selectedElements = document.querySelectorAll('.day-box.selected');
-            selectedElements.forEach(el => el.classList.remove('selected'));
-            
-            // Set new selection
-            selectedDate = dayElement.dataset.date;
-            dayElement.classList.add('selected');
-        }
+    // Don't allow selecting Sundays
+    const dateObj = new Date(dayElement.dataset.date);
+    if (dateObj.getDay() === 0) {
+        showNotification('Sunday cannot be selected for attendance', 'error');
+        return;
+    }
+    
+    // Clear previous selection
+    const selectedElements = document.querySelectorAll('.day-box.selected');
+    selectedElements.forEach(el => el.classList.remove('selected'));
+    
+    // Set new selection
+    selectedDate = dayElement.dataset.date;
+    dayElement.classList.add('selected');
+}
         
         // Update calendar with attendance data
         function updateCalendarStatus() {
-            const dayBoxes = document.querySelectorAll('.day-box:not(.holiday)');
-            
-            dayBoxes.forEach(box => {
-                const date = box.dataset.date;
-                const statusElement = box.querySelector('.day-status');
-                
-                // Reset classes
-                box.classList.remove('present', 'absent', 'leave');
-                statusElement.textContent = '';
-                
-                // Apply attendance status from the global attendanceData
-                if (attendanceData[date]) {
-                    box.classList.add(attendanceData[date].toLowerCase());
-                    statusElement.textContent = attendanceData[date];
-                }
-            });
-            
-            calculateStatistics();
+    const dayBoxes = document.querySelectorAll('.day-box');
+    
+    dayBoxes.forEach(box => {
+        const date = box.dataset.date;
+        const statusElement = box.querySelector('.day-status');
+        
+        // Check if it's Sunday
+        const dateObj = new Date(date);
+        if (dateObj.getDay() === 0) {
+            // Make Sunday a holiday automatically
+            box.classList.add('holiday');
+            statusElement.textContent = 'Holiday';
+            return;
         }
         
-        // Set attendance status
-        async function setStatus(status) {
-            if (!selectedDate) {
-                showNotification('Please select a date first', 'error');
-                return;
-            }
-            
-            // Update global attendanceData
-            attendanceData[selectedDate] = status;
-            
-            // Get month key for localStorage
-            const dateObj = new Date(selectedDate);
-            const monthKey = `attendance_${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
-            
-            // Save to localStorage
-            try {
-                // Get existing month data
-                let monthData = {};
-                const savedData = localStorage.getItem(monthKey);
-                if (savedData) {
-                    monthData = JSON.parse(savedData);
-                }
-                
-                // Update with new status
-                monthData[selectedDate] = status;
-                
-                // Save back to localStorage
-                localStorage.setItem(monthKey, JSON.stringify(monthData));
-                
-                console.log('Saved to localStorage:', monthKey, monthData);
-                
-            } catch (error) {
-                console.error('Error saving to localStorage:', error);
-                showNotification('Error saving attendance', 'error');
-                return;
-            }
-            
-            updateCalendarStatus();
-            showNotification(`Marked as ${status} successfully`, 'success');
-            
-            // Clear selection
-            const selectedElement = document.querySelector('.day-box.selected');
-            if (selectedElement) {
-                selectedElement.classList.remove('selected');
-            }
-            selectedDate = null;
+        // Reset classes for non-Sunday days
+        box.classList.remove('holiday', 'present', 'absent', 'leave');
+        statusElement.textContent = '';
+        
+        // Apply attendance status from the global attendanceData
+        if (attendanceData[date]) {
+            box.classList.add(attendanceData[date].toLowerCase());
+            statusElement.textContent = attendanceData[date];
         }
+    });
+    
+    calculateStatistics();
+}
+        
+        // Set attendance status
+     async function setStatus(status) {
+    if (!selectedDate) {
+        showNotification('Please select a date first', 'error');
+        return;
+    }
+    
+    // Check if it's Sunday
+    const dateObj = new Date(selectedDate);
+    if (dateObj.getDay() === 0) {
+        showNotification('Cannot set status for Sunday', 'error');
+        return;
+    }
+    
+    // Update global attendanceData
+    attendanceData[selectedDate] = status;
+    
+    // Get month key for localStorage
+    const monthKey = `attendance_${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+    
+    // Save to localStorage
+    try {
+        // Get existing month data
+        let monthData = {};
+        const savedData = localStorage.getItem(monthKey);
+        if (savedData) {
+            monthData = JSON.parse(savedData);
+        }
+        
+        // Update with new status
+        monthData[selectedDate] = status;
+        
+        // Save back to localStorage
+        localStorage.setItem(monthKey, JSON.stringify(monthData));
+        
+        console.log('Saved to localStorage:', monthKey, monthData);
+        
+    } catch (error) {
+        console.error('Error saving to localStorage:', error);
+        showNotification('Error saving attendance', 'error');
+        return;
+    }
+    
+    updateCalendarStatus();
+    showNotification(`Marked as ${status} successfully`, 'success');
+    
+    // Clear selection
+    const selectedElement = document.querySelector('.day-box.selected');
+    if (selectedElement) {
+        selectedElement.classList.remove('selected');
+    }
+    selectedDate = null;
+}
         
         // Remove status
         async function removeStatus() {
-            if (!selectedDate) {
-                showNotification('Please select a date first', 'error');
-                return;
+    if (!selectedDate) {
+        showNotification('Please select a date first', 'error');
+        return;
+    }
+    
+    // Check if it's Sunday
+    const dateObj = new Date(selectedDate);
+    if (dateObj.getDay() === 0) {
+        showNotification('Sunday is always a holiday, cannot remove status', 'error');
+        return;
+    }
+    
+    if (attendanceData[selectedDate]) {
+        const monthKey = `attendance_${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+        
+        try {
+            // Get existing month data
+            let monthData = {};
+            const savedData = localStorage.getItem(monthKey);
+            if (savedData) {
+                monthData = JSON.parse(savedData);
             }
             
-            if (attendanceData[selectedDate]) {
-                const dateObj = new Date(selectedDate);
-                const monthKey = `attendance_${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
-                
-                try {
-                    // Get existing month data
-                    let monthData = {};
-                    const savedData = localStorage.getItem(monthKey);
-                    if (savedData) {
-                        monthData = JSON.parse(savedData);
-                    }
-                    
-                    // Remove the status
-                    delete monthData[selectedDate];
-                    delete attendanceData[selectedDate];
-                    
-                    // Save back to localStorage
-                    localStorage.setItem(monthKey, JSON.stringify(monthData));
-                    
-                    console.log('Removed from localStorage:', selectedDate);
-                    
-                } catch (error) {
-                    console.error('Error removing from localStorage:', error);
-                    showNotification('Error removing attendance', 'error');
-                    return;
-                }
-                
-                updateCalendarStatus();
-                showNotification('Attendance status removed', 'success');
-                
-                // Clear selection
-                const selectedElement = document.querySelector('.day-box.selected');
-                if (selectedElement) {
-                    selectedElement.classList.remove('selected');
-                }
-                selectedDate = null;
-            } else {
-                showNotification('No attendance record found for this date', 'error');
-            }
+            // Remove the status
+            delete monthData[selectedDate];
+            delete attendanceData[selectedDate];
+            
+            // Save back to localStorage
+            localStorage.setItem(monthKey, JSON.stringify(monthData));
+            
+            console.log('Removed from localStorage:', selectedDate);
+            
+        } catch (error) {
+            console.error('Error removing from localStorage:', error);
+            showNotification('Error removing attendance', 'error');
+            return;
         }
+        
+        updateCalendarStatus();
+        showNotification('Attendance status removed', 'success');
+        
+        // Clear selection
+        const selectedElement = document.querySelector('.day-box.selected');
+        if (selectedElement) {
+            selectedElement.classList.remove('selected');
+        }
+        selectedDate = null;
+    } else {
+        showNotification('No attendance record found for this date', 'error');
+    }
+}
         
         // Calculate statistics
         function calculateStatistics() {
-            let present = 0, absent = 0, leave = 0;
-            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            
-            for (let day = 1; day <= daysInMonth; day++) {
-                const date = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const dateObj = new Date(date);
-                
-                // Skip Sundays (holidays)
-                if (dateObj.getDay() === 0) continue;
-                
-                if (attendanceData[date] === 'Present') present++;
-                else if (attendanceData[date] === 'Absent') absent++;
-                else if (attendanceData[date] === 'Leave') leave++;
-            }
-            
-            totalPresentEl.textContent = present;
-            totalAbsentEl.textContent = absent;
-            totalLeaveEl.textContent = leave;
-        }
+    let present = 0, absent = 0, leave = 0;
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dateObj = new Date(date);
+        
+        // Skip Sundays (holidays) - they are not counted in statistics
+        if (dateObj.getDay() === 0) continue;
+        
+        if (attendanceData[date] === 'Present') present++;
+        else if (attendanceData[date] === 'Absent') absent++;
+        else if (attendanceData[date] === 'Leave') leave++;
+    }
+    
+    totalPresentEl.textContent = present;
+    totalAbsentEl.textContent = absent;
+    totalLeaveEl.textContent = leave;
+}
         
         // Save salary data
         async function saveSalary() {
