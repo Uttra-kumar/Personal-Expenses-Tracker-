@@ -140,10 +140,10 @@
             font-size: 1.1rem;
         }
 
-        .sunday {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
-            color: white;
-        }
+       .sunday {
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    color: var(--text-dark);
+}
 
         .day-box {
             aspect-ratio: 1;
@@ -822,13 +822,8 @@
         }
         
         // Select date
-        function selectDate(dayElement) {
-    // Don't allow selecting Sundays
-    const dateObj = new Date(dayElement.dataset.date);
-    if (dateObj.getDay() === 0) {
-        showNotification('Sunday cannot be selected for attendance', 'error');
-        return;
-    }
+       function selectDate(dayElement) {
+    // Allow selecting Sundays too - remove the restriction
     
     // Clear previous selection
     const selectedElements = document.querySelectorAll('.day-box.selected');
@@ -847,17 +842,16 @@
         const date = box.dataset.date;
         const statusElement = box.querySelector('.day-status');
         
-        // Check if it's Sunday
+        // Check if it's Sunday and add CSS class
         const dateObj = new Date(date);
         if (dateObj.getDay() === 0) {
-            // Make Sunday a holiday automatically
-            box.classList.add('holiday');
-            statusElement.textContent = 'Holiday';
-            return;
+            box.classList.add('sunday');
+        } else {
+            box.classList.remove('sunday');
         }
         
-        // Reset classes for non-Sunday days
-        box.classList.remove('holiday', 'present', 'absent', 'leave');
+        // Reset status classes
+        box.classList.remove('present', 'absent', 'leave', 'holiday');
         statusElement.textContent = '';
         
         // Apply attendance status from the global attendanceData
@@ -872,10 +866,11 @@
         
         // Set attendance status
      async function setStatus(status) {
-    if (!selectedDate) {
+     if (!selectedDate) {
         showNotification('Please select a date first', 'error');
         return;
     }
+    
     
     // Check if it's Sunday
     const dateObj = new Date(selectedDate);
@@ -985,11 +980,8 @@
     
     for (let day = 1; day <= daysInMonth; day++) {
         const date = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        const dateObj = new Date(date);
         
-        // Skip Sundays (holidays) - they are not counted in statistics
-        if (dateObj.getDay() === 0) continue;
-        
+        // Count all days including Sundays
         if (attendanceData[date] === 'Present') present++;
         else if (attendanceData[date] === 'Absent') absent++;
         else if (attendanceData[date] === 'Leave') leave++;
