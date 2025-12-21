@@ -874,10 +874,10 @@
     
     // Check if it's Sunday
     const dateObj = new Date(selectedDate);
-    if (dateObj.getDay() === 0) {
-        showNotification('Cannot set status for Sunday', 'error');
-        return;
-    }
+    // if (dateObj.getDay() === 0) {
+    //     showNotification('Cannot set status for Sunday', 'error');
+    //     return;
+    // }
     
     // Update global attendanceData
     attendanceData[selectedDate] = status;
