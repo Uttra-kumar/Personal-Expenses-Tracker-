@@ -971,7 +971,6 @@
                         <th>Mode</th>
                         <th>Category</th>
                         <th>Description</th>
-                        <th>Reference</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -1695,7 +1694,6 @@
                     <td><span class="mode-badge">${transaction.payment_mode}</span></td>
                     <td>${transaction.category || '-'}</td>
                     <td>${transaction.description || '-'}</td>
-                    <td>${transaction.reference_no || '-'}</td>
                     <td class="actions">
                         <button class="action-btn edit-btn" onclick="editTransaction(${transaction.id})">
                             <i class="fas fa-edit"></i>
