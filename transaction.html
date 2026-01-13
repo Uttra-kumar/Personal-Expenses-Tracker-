@@ -1046,29 +1046,7 @@
         updateDateTime();
         setInterval(updateDateTime, 1000);
 
-        // Session timer countdown
-        let sessionTime = 52;
-        const sessionTimer = document.getElementById('counter');
-        
-        function updateSessionTimer() {
-            if (sessionTime > 0) {
-                sessionTime--;
-                sessionTimer.textContent = sessionTime + 's';
-            }
-            
-            if (sessionTime <= 0) {
-                alert('Session expired. Please log in again.');
-                window.location.href = 'login.html';
-            }
-        }
-        
-        // Update session timer every second
-        setInterval(updateSessionTimer, 1000);
 
-        // Reset session timer on user activity
-        document.addEventListener('click', function() {
-            sessionTime = 52;
-        });
 
         // DOM elements
         const transactionForm = document.getElementById('transactionForm');
