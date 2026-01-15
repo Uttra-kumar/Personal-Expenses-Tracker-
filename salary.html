@@ -1481,20 +1481,7 @@
                 
             });
 
-            // Logout button
-            document.querySelectorAll('.nav-item').forEach(item => {
-                if (item.textContent.includes('Logout')) {
-                    item.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        if (confirm('Are you sure you want to logout?')) {
-                            window.location.href = 'login.html';
-                        }
-                        
-                    });
-                }
-            });
-
-            // Reset session timer on user activity
+        
             
         }
 
