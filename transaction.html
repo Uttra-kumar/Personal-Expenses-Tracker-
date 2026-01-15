@@ -1768,7 +1768,7 @@
                     .insert([transactionData]);
                 
                 if (error) throw error;
-                
+                location.reload();
                 // Add to local transactions array
                 transactions.unshift(transactionData);
                 
@@ -1831,7 +1831,7 @@
                     .insert([transferData]);
                 
                 if (error) throw error;
-                
+                location.reload();
                 // Add to local transactions array
                 transactions.unshift(transferData);
                 
@@ -1878,7 +1878,7 @@
                                 .eq('id', transactionId);
                             
                             if (error) throw error;
-                            
+                            location.reload();
                             // Remove from local transactions array
                             const index = transactions.findIndex(t => t.id === transactionId);
                             if (index !== -1) {
