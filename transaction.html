@@ -2331,32 +2331,7 @@
             });
             
             // Navigation
-            document.getElementById('home-nav').addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-                this.classList.add('active');
-            });
             
-            document.getElementById('salary-nav').addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-                this.classList.add('active');
-                showAlert('info', 'Coming Soon', 'Salary Manager section will be implemented in the next update');
-            });
-            
-            document.getElementById('logout-nav').addEventListener('click', function(e) {
-                e.preventDefault();
-                showAlert('warning', 'Confirm Logout', 
-                    'Are you sure you want to logout?',
-                    function() {
-                        showAlert('success', 'Success', 'Logged out successfully!');
-                        setTimeout(() => location.reload(), 1500);
-                    },
-                    function() {
-                        // Cancel callback
-                    }
-                );
-            });
             
             // Close modals when clicking outside
             document.querySelectorAll('.modal-overlay').forEach(modal => {
