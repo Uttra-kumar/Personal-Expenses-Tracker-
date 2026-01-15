@@ -1194,7 +1194,6 @@
                                     <th>Amount</th>
                                     <th>Mode</th>
                                     <th>Category</th>
-                                    <th>Reference</th>
                                     <th>Description</th>
                                     <th>Actions</th>
                                 </tr>
@@ -1600,7 +1599,6 @@
                     <td><span class="${typeClass}">${formatCurrency(transaction.amount)}</span></td>
                     <td><span class="badge badge-${transaction.mode}">${modeText}</span></td>
                     <td>${transaction.category}</td>
-                    <td>${transaction.reference_no || '-'}</td>
                     <td>${transaction.description || '-'}</td>
                     <td>
                         <div class="action-buttons">
@@ -2078,7 +2076,7 @@
                 e.preventDefault();
                 
                 const amount = parseFloat(document.getElementById('transferAmount').value);
-                const description = document.getElementById('transferDesc').value || 'Funds Transfer';
+                const description = document.getElementById('transferDesc').value || 'IMPS';
                 const today = new Date().toISOString().split('T')[0];
                 
                 // Validation
