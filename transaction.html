@@ -1410,7 +1410,7 @@
         
         // Generate random transaction ID
         function generateTransactionId() {
-            return 'TX' + Date.now() + Math.floor(Math.random() * 1000);
+            return 'TX' + '-' + Math.floor(Math.random() * 10000);
         }
         
         // Format currency
