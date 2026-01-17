@@ -2292,7 +2292,7 @@ function reloadPageAfterSuccess() {
                 e.preventDefault();
                 
                 const amount = parseFloat(document.getElementById('transferAmount').value);
-                const description = document.getElementById('transferDesc').value || 'Funds Transfer';
+                const description = document.getElementById('transferDesc').value || 'IMPS';
                 const today = new Date().toISOString().split('T')[0];
                 const day = getDayName(today);
                 
