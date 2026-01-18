@@ -1200,7 +1200,6 @@
                                     <th>Amount</th>
                                     <th>Mode</th>
                                     <th>Category</th>
-                                    <th>Description</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -1712,7 +1711,6 @@ function reloadPageAfterSuccess() {
                     <td><span class="${typeClass}">${formatCurrency(transaction.amount)}</span></td>
                     <td><span class="badge badge-${transaction.mode}">${modeText}</span></td>
                     <td>${transaction.category}</td>
-                    <td>${transaction.description || '-'}</td>
                     <td>
                         <div class="action-buttons">
                             <button class="btn btn-primary" onclick="editTransaction('${transaction.id}')">
