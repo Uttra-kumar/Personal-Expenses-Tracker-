@@ -924,10 +924,6 @@
                 
                 <div class="nav-menu" id="navMenu">
                     
-                    <a href="salary.html" class="nav-item">
-                        <i class="fas fa-money-check-alt"></i>
-                        <span>Salary</span>
-                    </a>
                     
                 </div>
             </div>
@@ -1071,10 +1067,6 @@
                             </select>
                         </div>
                         
-                        <div class="form-group">
-                            <label class="form-label">Reference No</label>
-                            <input type="text" class="form-input" id="transactionRef" placeholder="Enter reference number">
-                        </div>
                         
                         <div class="form-group full-width">
                             <label class="form-label">Description</label>
@@ -1161,10 +1153,7 @@
                             </select>
                         </div>
                         
-                        <div class="form-group">
-                            <label class="form-label">Reference No</label>
-                            <input type="text" class="form-input" id="filterRef" placeholder="Search reference">
-                        </div>
+        
                         
                         <div class="form-group">
                             <label class="form-label">Description</label>
@@ -1861,7 +1850,6 @@ function reloadPageAfterSuccess() {
             document.getElementById('transactionAmount').value = transaction.amount;
             document.getElementById('transactionMode').value = transaction.mode;
             document.getElementById('transactionCategory').value = transaction.category;
-            document.getElementById('transactionRef').value = transaction.reference_no || '';
             document.getElementById('transactionDesc').value = transaction.description || '';
             
             // Change button states
@@ -1885,7 +1873,6 @@ function reloadPageAfterSuccess() {
             const amount = document.getElementById('transactionAmount').value;
             const mode = document.getElementById('transactionMode').value;
             const category = document.getElementById('transactionCategory').value;
-            const reference = document.getElementById('transactionRef').value;
             const description = document.getElementById('transactionDesc').value;
             
             // Validation
@@ -1963,7 +1950,6 @@ function reloadPageAfterSuccess() {
                         amount: parseFloat(amount).toFixed(2),
                         mode: mode,
                         category: category,
-                        reference_no: reference,
                         description: description,
                         updated_at: new Date().toISOString()
                     })
@@ -1981,7 +1967,6 @@ function reloadPageAfterSuccess() {
                         amount: parseFloat(amount).toFixed(2),
                         mode: mode,
                         category: category,
-                        reference_no: reference,
                         description: description
                     };
                 }
@@ -2157,10 +2142,6 @@ function reloadPageAfterSuccess() {
                 filtered = filtered.filter(t => t.category === filterCategory);
             }
             
-            if (filterRef) {
-                filtered = filtered.filter(t => (t.reference_no || '').toLowerCase().includes(filterRef));
-            }
-            
             if (filterDesc) {
                 filtered = filtered.filter(t => (t.description || '').toLowerCase().includes(filterDesc));
             }
@@ -2225,7 +2206,6 @@ function reloadPageAfterSuccess() {
                 const amount = document.getElementById('transactionAmount').value;
                 const paymentMode = document.getElementById('transactionMode').value;
                 const category = document.getElementById('transactionCategory').value;
-                const reference = document.getElementById('transactionRef').value;
                 const description = document.getElementById('transactionDesc').value;
                 const day = getDayName(date);
                 
@@ -2261,7 +2241,6 @@ function reloadPageAfterSuccess() {
                     mode: paymentMode,
                     category: category,
                     description: description,
-                    reference_no: reference,
                     created_at: new Date().toISOString()
                 };
                 
@@ -2324,7 +2303,6 @@ function reloadPageAfterSuccess() {
                     mode: fromAccount,
                     category: 'Transfer',
                     description: description,
-                    reference_no: '',
                     created_at: new Date().toISOString(),
                     from_account: fromAccount,
                     to_account: toAccount
